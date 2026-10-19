@@ -23,12 +23,36 @@
  * Do not edit the class manually.
  */
 
+import { PostWorkingCapitalLoanTransactionsPaymentDetailRequest } from './postWorkingCapitalLoanTransactionsPaymentDetailRequest';
 
 
 /**
- * Request for working capital loan transaction command execution
+ * Request for transaction command executed on a transaction named in the path: undo, adjust, discountFee or discountFeeAdjustment. For command=undo use only note and reversalExternalId. For command=adjust dateFormat / locale / transactionDate / transactionAmount / classificationId / externalId / paymentDetails are accepted.
  */
 export interface ExecuteWorkingCapitalLoanTransactionCommandRequest { 
+    /**
+     * Optional code value id for transaction classification (command=discountFee, discountFeeAdjustment, adjust)
+     */
+    classificationId?: number;
+    dateFormat?: string;
+    /**
+     * Optional external id for the created transaction. For command=adjust this is the id of the replacement when transactionAmount > 0 (same as term-loan adjust). The reversed transaction keeps its original external id. If omitted and auto-generation is enabled, a new id is generated for the replacement.
+     */
+    externalId?: string;
+    locale?: string;
+    note?: string;
+    paymentDetails?: PostWorkingCapitalLoanTransactionsPaymentDetailRequest;
+    /**
+     * Optional external id for the reversal (command=undo)
+     */
     reversalExternalId?: string;
+    /**
+     * Transaction amount (command=discountFee, discountFeeAdjustment); command=adjust zero reverses the existing transaction (same as undo). A positive amount reverses it and creates a replacement
+     */
+    transactionAmount?: number;
+    /**
+     * Transaction date (command=discountFeeAdjustment); for command=discountFee it defaults to the date of the related disbursement and, when sent, must be equal to it; command=adjust required when transactionAmount > 0: date of the replacement transaction. Optional when transactionAmount is 0 (undo).
+     */
+    transactionDate?: string;
 }
 
